@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter stopwatch',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.cyan,
       ),
       home: MyHomePage(title: 'My first stopwatch'),
     );
@@ -26,22 +26,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter;
   Stream<int> stream;
-  int _minutes = 0, _hours = 0;
-  String time = "";
+  int _minutes = 0, _hours = 0, _counter;
+  String time = "00:00:00";
+  String t_hours, t_minutes, t_seconds;
 
   convertTime() {
-    if (_counter == 60) {
-      _minutes++;
-      _counter = 0;
-    }
-    if (_minutes == 60) {
-      _hours++;
-      _minutes = 0;
-    }
     setState(() {
-      time = "$_hours:$_minutes:$_counter";
+      if (_counter == 60) {
+        _counter = 0;
+        _minutes++;
+      }
+      if (_counter < 10)
+        t_seconds = '0$_counter';
+      else
+        t_seconds = _counter.toString();
+
+      if (_minutes == 60) {
+        _minutes = 0;
+        _hours++;
+      }
+
+      if (_minutes < 10)
+        t_minutes = '0$_minutes';
+      else
+        t_minutes = _minutes.toString();
+
+      if (_hours < 10)
+        t_hours = '0$_hours';
+      else
+        t_hours = _hours.toString();
+
+      time = "$t_hours:$t_minutes:$t_seconds";
     });
   }
 
@@ -61,28 +77,26 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$time',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: changeState,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
-    );
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('🧜'),
+              Text(
+                '$time',
+                style: Theme.of(context).textTheme.display1,
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: changeState,
+          tooltip: 'Increment',
+          child: Text('🥦'),
+          backgroundColor: Colors.cyan,
+        ));
   }
 }
