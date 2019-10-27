@@ -28,10 +28,26 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter;
   Stream<int> stream;
+  int _minutes = 0, _hours = 0;
+  String time = "";
+
+  convertTime() {
+    if (_counter == 60) {
+      _minutes++;
+      _counter = 0;
+    }
+    if (_minutes == 60) {
+      _hours++;
+      _minutes = 0;
+    }
+    setState(() {
+      time = "$_hours:$_minutes:$_counter";
+    });
+  }
 
   changeState() {
     stream = increment(Duration(seconds: 1));
-    stream.listen((data) => print('I secondi sono: $data'));
+    stream.listen((_counter) => convertTime());
   }
 
   Stream<int> increment(Duration interval) async* {
@@ -56,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '$_counter',
+              '$time',
               style: Theme.of(context).textTheme.display1,
             ),
           ],
