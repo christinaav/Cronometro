@@ -77,26 +77,38 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('🧜'),
-              Text(
-                '$time',
-                style: Theme.of(context).textTheme.display1,
+      appBar: AppBar(
+        title: Text(widget.title,
+            style: TextStyle(
+              color: Colors.white,
+            )),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '$time',
+              style: TextStyle(
+                fontSize: 70.0,
+                color: Colors.grey,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: changeState,
-          tooltip: 'Increment',
-          child: Text('🥦'),
-          backgroundColor: Colors.cyan,
-        ));
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: changeState,
+        tooltip: 'Increment',
+        icon: Icon(Icons.play_arrow),
+        label: Text('START'),
+        backgroundColor: Colors.cyan,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(25.0))),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
   }
 }
