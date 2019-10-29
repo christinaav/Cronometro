@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -98,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      /*floatingActionButton: FloatingActionButton.extended(
         onPressed: changeState,
         tooltip: 'Increment',
         icon: Icon(Icons.play_arrow),
@@ -107,8 +109,21 @@ class _MyHomePageState extends State<MyHomePage> {
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(25.0))),
-      ),
+      ),*/
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.play_pause,
+          onOpen: changeState,
+          children: [
+            SpeedDialChild(
+                child: Icon(Icons.loop),
+                label: "Restart",
+                onTap: () => print("First")),
+            SpeedDialChild(
+                child: Icon(Icons.alarm),
+                label: "Timer",
+                onTap: () => print("Second"))
+          ]),
     );
   }
 }
