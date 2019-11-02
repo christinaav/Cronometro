@@ -30,9 +30,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   StreamSubscription f;
   Stream<int> stream;
-  int _minutes = 0, _hours = 0, _counter;
+  Text resume = Text('START');
+  int _minutes = 0, _hours = 0, _counter = 0, tap = 0;
   String time = "00:00:00";
   String t_hours, t_minutes, t_seconds;
+  bool isSwitched = true;
+  Color col = Colors.white;
 
   convertTime() {
     setState(() {
@@ -64,12 +67,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  changeState() {
-    stream = increment();
-    f = stream.listen((_counter) => convertTime());
+  startState() {
+    if (tap == 0) {
+      tap++;
+      resume = Text('RESUME');
+      stream = increment();
+      f = stream.listen((_counter) => convertTime());
+    }
+    if (tap > 0) f.resume();
   }
 
-  stopState() {
+  pauseState() {
     f.pause();
   }
 
@@ -77,86 +85,132 @@ class _MyHomePageState extends State<MyHomePage> {
     f.resume();
   }
 
-  Stream<int> increment() async* {
+  restartState() {
+    tap = 0;
+    f.pause();
     _counter = 0;
+    _minutes = 0;
+    _hours = 0;
+    setState(() {
+      time = "00:00:00";
+    });
+    resume = Text("START");
+  }
+
+  Stream<int> increment() async* {
     while (true) {
       await Future.delayed(Duration(seconds: 1));
       yield _counter++;
     }
   }
 
+  timeLapse() {
+    print('$time');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title,
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: col,
+        appBar: AppBar(
+          backgroundColor: Colors.teal,
+          title: Text(
+            widget.title,
             style: TextStyle(
               color: Colors.white,
-            )),
-      ),
-      body: Center(
-          child: Container(
-        padding: EdgeInsets.all(35),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              children: <Widget>[
-                Text(
-                  '$time',
-                  style: TextStyle(
-                    fontSize: 70.0,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w600,
-                  ),
-                )
-              ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                FloatingActionButton.extended(
-                  onPressed: changeState,
-                  icon: Icon(Icons.play_arrow),
-                  label: Text('START'),
-                  backgroundColor: Colors.teal[400],
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                FloatingActionButton.extended(
-                  onPressed: stopState,
-                  icon: Icon(Icons.pause),
-                  label: Text('PAUSE'),
-                  backgroundColor: Colors.teal[400],
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                FloatingActionButton.extended(
-                  onPressed: null,
-                  icon: Icon(Icons.loop),
-                  label: Text('RESTART'),
-                  backgroundColor: Colors.teal[400],
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                ),
-              ],
+          ),
+          actions: <Widget>[
+            Switch(
+              value: isSwitched,
+              onChanged: (value) {
+                setState(() {
+                  isSwitched = value;
+                  print(value);
+                  if (value)
+                    col = Colors.black;
+                  else
+                    col = Colors.white;
+                });
+              },
+              activeTrackColor: Colors.white,
+              activeColor: Colors.teal,
             ),
           ],
         ),
-      )),
+        body: Center(
+            child: Container(
+          alignment: Alignment(0.0, 0.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 100),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    '$time',
+                    style: TextStyle(
+                      fontSize: 70.0,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  FloatingActionButton.extended(
+                    onPressed: startState,
+                    icon: Icon(Icons.play_arrow),
+                    label: resume,
+                    backgroundColor: Colors.teal[400],
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                  ),
+                  FloatingActionButton.extended(
+                    onPressed: pauseState,
+                    icon: Icon(Icons.pause),
+                    label: Text('PAUSE'),
+                    backgroundColor: Colors.teal[400],
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                  ),
+                ],
+              ),
+              SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  FloatingActionButton.extended(
+                    onPressed: restartState,
+                    icon: Icon(Icons.loop),
+                    label: Text('RESTART'),
+                    backgroundColor: Colors.teal[400],
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )),
+        floatingActionButton: FloatingActionButton(
+          onPressed: timeLapse,
+          backgroundColor: Colors.teal[400],
+          child: Icon(Icons.timer),
+        ),
+      ),
     );
   }
 }
