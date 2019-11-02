@@ -31,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   StreamSubscription f;
   Stream<int> stream;
   Text resume = Text('START');
+
   int _minutes = 0, _hours = 0, _counter = 0, tap = 0;
   String time = "00:00:00";
   String t_hours, t_minutes, t_seconds;
@@ -68,17 +69,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   startState() {
+    resume = Text('RESUME');
     if (tap == 0) {
-      tap++;
-      resume = Text('RESUME');
       stream = increment();
       f = stream.listen((_counter) => convertTime());
+      tap++;
     }
-    if (tap > 0) f.resume();
+    if (tap > 0 && f.isPaused) f.resume();
   }
 
   pauseState() {
-    f.pause();
+    if (!f.isPaused) f.pause();
   }
 
   resumeState() {
@@ -86,8 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   restartState() {
-    tap = 0;
-    f.pause();
+    if (!f.isPaused) f.pause();
     _counter = 0;
     _minutes = 0;
     _hours = 0;
@@ -102,10 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
       await Future.delayed(Duration(seconds: 1));
       yield _counter++;
     }
-  }
-
-  timeLapse() {
-    print('$time');
   }
 
   @override
@@ -140,75 +136,74 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
         body: Center(
-            child: Container(
-          alignment: Alignment(0.0, 0.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 100),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '$time',
-                    style: TextStyle(
-                      fontSize: 70.0,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w600,
+          child: Container(
+            alignment: Alignment(0.0, 0.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 120),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      '$time',
+                      style: TextStyle(
+                        fontSize: 85.0,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    FloatingActionButton.extended(
+                      onPressed: startState,
+                      icon: Icon(Icons.play_arrow),
+                      label: resume,
+                      backgroundColor: Colors.teal[400],
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(25.0))),
                     ),
-                  )
-                ],
-              ),
-              SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  FloatingActionButton.extended(
-                    onPressed: startState,
-                    icon: Icon(Icons.play_arrow),
-                    label: resume,
-                    backgroundColor: Colors.teal[400],
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                  ),
-                  FloatingActionButton.extended(
-                    onPressed: pauseState,
-                    icon: Icon(Icons.pause),
-                    label: Text('PAUSE'),
-                    backgroundColor: Colors.teal[400],
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                  ),
-                ],
-              ),
-              SizedBox(height: 50),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  FloatingActionButton.extended(
-                    onPressed: restartState,
-                    icon: Icon(Icons.loop),
-                    label: Text('RESTART'),
-                    backgroundColor: Colors.teal[400],
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                  ),
-                ],
-              ),
-            ],
+                    FloatingActionButton.extended(
+                      onPressed: pauseState,
+                      icon: Icon(Icons.pause),
+                      label: Text('PAUSE'),
+                      backgroundColor: Colors.teal[400],
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(25.0))),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    FloatingActionButton.extended(
+                      onPressed: restartState,
+                      icon: Icon(Icons.loop),
+                      label: Text('RESTART'),
+                      backgroundColor: Colors.teal[400],
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(25.0))),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        )),
-        floatingActionButton: FloatingActionButton(
-          onPressed: timeLapse,
-          backgroundColor: Colors.teal[400],
-          child: Icon(Icons.timer),
         ),
       ),
     );
