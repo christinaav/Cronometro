@@ -1,16 +1,18 @@
-# cronometro
+Il seguente progetto è la versione di un cronometro creato il Flutter usando gli stream.
 
-A new Flutter project.
+Per creare uno stream, ho generato una funzione asincrona. Usando Future, incrementa counter ogni secondo.
+Per poter usare i metodi pause e resume sullo streamer è stato usato uno StreamSubcription al quale è stato assegnato lo Stream.
 
-## Getting Started
+I metodi:
+- startState() richiama lo streamer creato in precedenza e assegna a f(StreamSubcription) l'ogetto ritornato dalla funzione increment
+- convertTime() converte il _counter (secondi) in una stringa di formato ore:minuti:secondi e aggiorna l'ogetto Text 
+- pauseState() mette in pausa lo stream
+- resumeState() riprende il contatore dello stream 
+- restartState() mette in pausa lo stream e resetta il _counter (secondi), minuti e ore
 
-This project is a starting point for a Flutter application.
+Il widget build crea:
+- una app bar con il titolo dell'applicazione e uno switch button che permette di scegliere tra light o dark mode
+- un container nel body che al suo interno ha come child una colonna con più righe. Queste hanno al loro interno il Text contenente la stringa che mostra il valore del cronometro,
+tre bottoni che avviano, mettono in pausa e resettano il cronometro
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

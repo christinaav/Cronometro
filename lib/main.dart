@@ -38,6 +38,14 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isSwitched = true;
   Color col = Colors.white;
 
+  //--Creazione dello stream--
+  Stream<int> increment() async* {
+    while (true) {
+      await Future.delayed(Duration(seconds: 1));
+      yield _counter++;
+    }
+  }
+
   convertTime() {
     setState(() {
       if (_counter == 60) {
@@ -68,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+//--Avvia il cronometro
   startState() {
     resume = Text('RESUME');
     if (tap == 0) {
@@ -78,14 +87,17 @@ class _MyHomePageState extends State<MyHomePage> {
     if (tap > 0 && f.isPaused) f.resume();
   }
 
+//--Mette in pausa il cronometro
   pauseState() {
     if (!f.isPaused) f.pause();
   }
 
+//--Riprende il conta tempo del cronometro
   resumeState() {
     f.resume();
   }
 
+//--Riporta a 0 il cronometro
   restartState() {
     if (!f.isPaused) f.pause();
     _counter = 0;
@@ -95,13 +107,6 @@ class _MyHomePageState extends State<MyHomePage> {
       time = "00:00:00";
     });
     resume = Text("START");
-  }
-
-  Stream<int> increment() async* {
-    while (true) {
-      await Future.delayed(Duration(seconds: 1));
-      yield _counter++;
-    }
   }
 
   @override
@@ -117,6 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.white,
             ),
           ),
+          //--Switch dark/light mode
           actions: <Widget>[
             Switch(
               value: isSwitched,
